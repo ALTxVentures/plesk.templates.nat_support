@@ -11,3 +11,8 @@ RESOURCES
 NOTES
 =====
 * run ```/usr/local/psa/admin/bin/httpdmng --reconfigure-all``` after changes are made to recompile all existing configs
+
+USAGE
+=====
+* use ```<?php include('/usr/local/psa/admin/conf/templates/custom/lib/nat_resolve.inc.php');?>``` include nat_resolver
+* update ```...->escapedAddress``` to ```nat_resolve(...->escapedAddress)```
