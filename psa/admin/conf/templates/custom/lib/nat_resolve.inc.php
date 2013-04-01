@@ -22,6 +22,8 @@ function nat_resolve($ipAddress)
 	if (isset($nat_translation[$ipAddress]))
 		$ipAddress = $nat_translation[$ipAddress];
 
+	return $ipAddress;
+
 }
 
 ?>
