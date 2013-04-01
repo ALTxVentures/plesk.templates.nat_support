@@ -10,6 +10,11 @@ if (!function_exists(nat_resolve))
 				"54.251.139.90" => "10.0.0.204",
 				"54.251.139.29" => "10.0.0.205",
 				"54.251.145.221" => "10.0.0.207",
+				"10.0.0.108" => null,
+				"10.0.0.206" => null,
+				"10.0.0.204" => null,
+				"10.0.0.205" => null,
+				"10.0.0.207" => null,
 			);
 		/*
 
@@ -21,7 +26,8 @@ if (!function_exists(nat_resolve))
 		$ipAddress->escapedPrivateAddress = $ipAddress->escapedAddress;
 		*/
 
-		if (isset($nat_translation[$ipAddress]))
+		
+		if (array_key_exists($ipAddress, $nat_translation))
 			$ipAddress = $nat_translation[$ipAddress];
 
 		return $ipAddress;

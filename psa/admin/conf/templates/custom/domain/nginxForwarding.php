@@ -7,6 +7,8 @@
 
 <?php include('/usr/local/psa/admin/conf/templates/custom/lib/nat_resolve.inc.php');?>
 
+<?php if (nat_resolve($OPT['ipAddress']->escapedAddress) != null ): ?>
+
 server {
     listen <?php echo nat_resolve($OPT['ipAddress']->escapedAddress) . ':' . $OPT['frontendPort'] . ($OPT['defaultIp'] ? ' default_server' : '') ?>;
 
@@ -42,3 +44,5 @@ server {
         access_log off;
     }
 }
+
+<?php endif; ?>

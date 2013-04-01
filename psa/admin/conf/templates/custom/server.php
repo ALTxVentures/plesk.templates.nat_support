@@ -9,7 +9,9 @@
         RPAFenable On
         RPAFsethostname On
         RPAFproxy_ips 127.0.0.1<?php foreach ($VAR->server->ipAddresses->all as $ipaddress): ?>
+<?php if (nat_resolve($ipaddress->escapedAddress) != null ): ?>
 <?php echo ($ipaddress->isIpV6() ? '' : ' ' . nat_resolve($ipaddress->escapedAddress)) ?>
+<?php endif; ?>
 <?php endforeach; ?>
 
 </IfModule>
@@ -18,7 +20,9 @@
         RPAFenable On
         RPAFsethostname On
         RPAFproxy_ips 127.0.0.1<?php foreach ($VAR->server->ipAddresses->all as $ipaddress): ?>
+<?php if (nat_resolve($ipaddress->escapedAddress) != null ): ?>
 <?php echo ($ipaddress->isIpV6() ? '' : ' ' . nat_resolve($ipaddress->escapedAddress)) ?>
+<?php endif; ?>
 <?php endforeach; ?>
 
         RPAFheader X-Forwarded-For

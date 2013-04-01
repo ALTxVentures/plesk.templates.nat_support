@@ -7,6 +7,8 @@
 
 <?php include('/usr/local/psa/admin/conf/templates/custom/lib/nat_resolve.inc.php');?>
 
+<?php if (nat_resolve($OPT['ipAddress']->escapedAddress) != null ): ?>
+
 server {
     listen <?php echo nat_resolve($OPT['ipAddress']->escapedAddress) . ':' . $OPT['frontendPort'] . ($OPT['defaultIp'] ? ' default_server' : '') . ($OPT['ssl'] ? ' ssl' : '') ?>;
 
@@ -117,3 +119,5 @@ server {
         access_log <?php echo $VAR->domain->physicalHosting->logsDir . '/' . ($OPT['ssl'] ? 'webmail_access_ssl_log' : 'webmail_access_log') ?>;
     }
 }
+
+<?php endif; ?>

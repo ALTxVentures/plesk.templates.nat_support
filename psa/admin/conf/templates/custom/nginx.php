@@ -4,7 +4,9 @@
 
 server {
 <?php foreach ($VAR->server->ipAddresses->all as $ipAddress): ?>
+	<?php if (nat_resolve($ipAddress->escapedAddress) != null ): ?>
     listen <?php echo nat_resolve($ipAddress->escapedAddress).":{$VAR->server->nginx->httpPort}" ?> <?php if ($ipAddress->isIpV6) echo 'ipv6only=on'; else $hasIpV4=true; ?>;
+	<?php endif; ?>
 <?php endforeach; ?>
     <?php if (!$hasIpV4) echo 'listen 127.0.0.1:' . $VAR->server->nginx->httpPort . ' ;'; ?>
 

@@ -23,12 +23,16 @@
         $ipAddress = next($ipAddresses)):
 ?>
 <VirtualHost \
+	<?php if (nat_resolve($ipAddress->escapedAddress) != null ): ?>
     <?php echo nat_resolve($ipAddress->escapedAddress).":{$VAR->server->webserver->httpPort}" ?> \
+	<?php endif; ?>
     <?php for ($n = 1;
             $n < $ipLimit && $ipAddress = next($ipAddresses);
             ++$n):
     ?>
+    <?php if (nat_resolve($ipAddress->escapedAddress) != null ): ?>
     <?php echo nat_resolve($ipAddress->escapedAddress).":{$VAR->server->webserver->httpPort}" ?> \
+    <?php endif; ?>
     <?php endfor; ?>
     <?php echo ($VAR->server->webserver->proxyActive) ? "127.0.0.1:" . $VAR->server->webserver->httpPort : ''; ?>>
 
@@ -94,7 +98,9 @@
 ?>
 <?php if ($ipAddress->sslCertificate->ce): ?>
 <VirtualHost \
+	<?php if (nat_resolve($ipAddress->escapedAddress) != null ): ?>
     <?php echo nat_resolve($ipAddress->escapedAddress).":{$VAR->server->webserver->httpsPort}" ?>
+	<?php endif; ?>
     <?php echo ($VAR->server->webserver->proxyActive) ? "127.0.0.1:" . $VAR->server->webserver->httpsPort : ''; ?>>
 
 	ServerName horde.webmail

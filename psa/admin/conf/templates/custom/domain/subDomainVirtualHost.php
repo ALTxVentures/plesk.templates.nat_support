@@ -1,5 +1,7 @@
 <?php include('/usr/local/psa/admin/conf/templates/custom/lib/nat_resolve.inc.php');?>
 
+<?php if (nat_resolve($OPT['ipAddress']->escapedAddress) != null ): ?>
+
 <?php if ($OPT['ssl']): ?>
 <IfModule mod_ssl.c>
 <?php endif; ?>
@@ -151,4 +153,7 @@ echo $VAR->includeTemplate('domain/service/bandWidth.php');
 
 <?php if ($OPT['ssl']): ?>
 </IfModule>
+<?php endif; ?>
+
+
 <?php endif; ?>
