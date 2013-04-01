@@ -1,0 +1,14 @@
+<?php /** @var Template_VariableAccessor $VAR */ ?>
+server {
+<?php foreach ($VAR->server->ipAddresses->all as $ipAddress): ?>
+    listen <?php echo "{$ipAddress->escapedAddress}:{$VAR->server->nginx->httpPort}" ?> <?php if ($ipAddress->isIpV6) echo 'ipv6only=on'; else $hasIpV4=true; ?>;
+<?php endforeach; ?>
+    <?php if (!$hasIpV4) echo 'listen 127.0.0.1:' . $VAR->server->nginx->httpPort . ' ;'; ?>
+
+    location / {
+        proxy_pass http://127.0.0.1:<?php echo $VAR->server->webserver->httpPort ?>;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
