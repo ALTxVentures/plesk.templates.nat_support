@@ -7,10 +7,16 @@
 
 <?php include('/usr/local/psa/admin/conf/templates/custom/lib/nat_resolve.inc.php');?>
 
-<?php if (nat_resolve($OPT['ipAddress']->escapedAddress) != null ): ?>
+<?php 
+    $ip['public'] = $OPT['ipAddress']->escapedAddress;
+    $ip['private'] = nat_resolve($OPT['ipAddress']->escapedAddress);
+
+    if ( $ip['private']!= null ):
+        foreach ($ip AS $ipaddress):
+?>
 
 server {
-    listen <?php echo nat_resolve($OPT['ipAddress']->escapedAddress) . ':' . $OPT['frontendPort'] . ($OPT['defaultIp'] ? ' default_server' : '') . ($OPT['ssl'] ? ' ssl' : '') ?>;
+    listen <?php echo $ipaddress . ':' . $OPT['frontendPort'] . ($OPT['defaultIp'] ? ' default_server' : '') . ($OPT['ssl'] ? ' ssl' : '') ?>;
 
     server_name <?php echo $VAR->domain->asciiName ?>;
 <?php if ($VAR->domain->isWildcard): ?>
@@ -57,9 +63,9 @@ server {
 
     location / { # IPv6 isn't supported in proxy_pass yet.
 <?php if ($OPT['ssl']): ?>
-        proxy_pass https://<?php echo ($OPT['ipAddress']->isIpV6() ? '127.0.0.1': nat_resolve($OPT['ipAddress']->escapedAddress)) ?>:<?php echo $OPT['backendPort'] ?>;
+        proxy_pass https://<?php echo ($OPT['ipAddress']->isIpV6() ? '127.0.0.1': $ipaddress) ?>:<?php echo $OPT['backendPort'] ?>;
 <?php else: ?>
-        proxy_pass http://<?php echo ($OPT['ipAddress']->isIpV6() ? '127.0.0.1': nat_resolve($OPT['ipAddress']->escapedAddress)) ?>:<?php echo $OPT['backendPort'] ?>;
+        proxy_pass http://<?php echo ($OPT['ipAddress']->isIpV6() ? '127.0.0.1': $ipaddress) ?>:<?php echo $OPT['backendPort'] ?>;
 <?php endif ?>
 
         proxy_set_header Host             $host;
@@ -78,7 +84,7 @@ server {
 }
 
 server {
-    listen <?php echo nat_resolve($OPT['ipAddress']->escapedAddress) . ':' . $OPT['frontendPort'] . ($OPT['ssl'] ? ' ssl' : '') ?>;
+    listen <?php echo $ipaddress . ':' . $OPT['frontendPort'] . ($OPT['ssl'] ? ' ssl' : '') ?>;
     server_name webmail.<?php echo $VAR->domain->asciiName ?>;
 <?php if ($VAR->domain->webAliases): ?>
     # aliases
@@ -108,9 +114,9 @@ server {
 
     location / { # IPv6 isn't supported in proxy_pass yet.
 <?php if ($OPT['ssl']): ?>
-        proxy_pass https://<?php echo ($OPT['ipAddress']->isIpV6() ? '127.0.0.1': nat_resolve($OPT['ipAddress']->escapedAddress)) ?>:<?php echo $OPT['backendPort'] ?>;
+        proxy_pass https://<?php echo ($OPT['ipAddress']->isIpV6() ? '127.0.0.1': $ipaddress) ?>:<?php echo $OPT['backendPort'] ?>;
 <?php else: ?>
-        proxy_pass http://<?php echo ($OPT['ipAddress']->isIpV6() ? '127.0.0.1': nat_resolve($OPT['ipAddress']->escapedAddress)) ?>:<?php echo $OPT['backendPort'] ?>;
+        proxy_pass http://<?php echo ($OPT['ipAddress']->isIpV6() ? '127.0.0.1': $ipaddress) ?>:<?php echo $OPT['backendPort'] ?>;
 <?php endif ?>
 
         proxy_set_header Host             $host;
@@ -120,4 +126,8 @@ server {
     }
 }
 
-<?php endif; ?>
+<?php 
+
+    endforeach;
+    endif; 
+?>
