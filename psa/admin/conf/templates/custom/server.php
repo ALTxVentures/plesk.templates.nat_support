@@ -9,7 +9,6 @@
         RPAFenable On
         RPAFsethostname On
         RPAFproxy_ips 127.0.0.1<?php foreach ($VAR->server->ipAddresses->all as $ipaddress): ?>
-
 <?php 
             $ip['public'] = $ipaddress->escapedAddress;
             $ip['private'] = nat_resolve($ipaddress->escapedAddress);

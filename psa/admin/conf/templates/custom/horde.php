@@ -23,7 +23,6 @@
         $ipAddress = next($ipAddresses)):
 ?>
 <VirtualHost \
-	
 	<?php 
             $ip['public'] = $ipAddress->escapedAddress;
             $ip['private'] = nat_resolve($ipAddress->escapedAddress);
@@ -119,8 +118,7 @@
 
             if ( $ip['private']!= null ):
                 foreach ($ip AS $ipaddress):
-        ?>
-    <?php echo nat_resolve($ipAddress->escapedAddress).":{$VAR->server->webserver->httpsPort}" ?>
+        ?><?php echo nat_resolve($ipAddress->escapedAddress).":{$VAR->server->webserver->httpsPort}" ?>
     <?php endforeach; ?>
 	<?php endif; ?>
     <?php echo ($VAR->server->webserver->proxyActive) ? "127.0.0.1:" . $VAR->server->webserver->httpsPort : ''; ?>>

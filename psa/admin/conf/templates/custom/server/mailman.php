@@ -11,31 +11,24 @@
 	$ipAddress = next($ipAddresses)): 
 ?>
 <VirtualHost \
-        
-        <?php 
+		<?php 
 		    $ip['public'] = $ipAddress->escapedAddress;
 		    $ip['private'] = nat_resolve($ipAddress->escapedAddress);
-
 		    if ( $ip['private']!= null ):
 		        foreach ($ip AS $ipaddress):
-		?>
-
-        	<?php echo $ipaddress.":{$VAR->server->webserver->httpPort}" ?> \
+		?><?php echo $ipaddress.":{$VAR->server->webserver->httpPort}" ?> \
         	<?php endforeach; ?>
-
     	<?php endif; ?>
 	<?php for ($n = 1;
 		$n < $ipLimit && $ipAddress = next($ipAddresses);
 		++$n):
-	?>
-		<?php 
+	?><?php 
 		    $ip['public'] = $ipAddress->escapedAddress;
 		    $ip['private'] = nat_resolve($ipAddress->escapedAddress);
 
 		    if ( $ip['private']!= null ):
 		        foreach ($ip AS $ipaddress):
 		?>
-
         	<?php echo $ipaddress.":{$VAR->server->webserver->httpPort}" ?> \
         	<?php endforeach; ?>
     	<?php endif; ?>
@@ -82,9 +75,7 @@
 
 		    if ( $ip['private']!= null ):
 		        foreach ($ip AS $ipaddress):
-		?>
-
-        	<?php echo $ipaddress.":{$VAR->server->webserver->httpsPort}" ?> \
+		?><?php echo $ipaddress.":{$VAR->server->webserver->httpsPort}" ?> \
         	<?php endforeach; ?>
     	<?php endif; ?>
 	<?php for ($n = 1;

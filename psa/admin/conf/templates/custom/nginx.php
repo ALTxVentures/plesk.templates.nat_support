@@ -4,16 +4,13 @@
 
 server {
 <?php foreach ($VAR->server->ipAddresses->all as $ipAddress): ?>
-	
-
-    <?php 
+ <?php 
             $ip['public'] = $ipAddress->escapedAddress;
             $ip['private'] = nat_resolve($ipAddress->escapedAddress);
 
             if ( $ip['private']!= null ):
                 foreach ($ip AS $ipaddress):
         ?>
-
     listen <?php echo $ipaddress.":{$VAR->server->nginx->httpPort}" ?> <?php if ($ipAddress->isIpV6) echo 'ipv6only=on'; else $hasIpV4=true; ?>;
     <?php endforeach; ?>
 	<?php endif; ?>
