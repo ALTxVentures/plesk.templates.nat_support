@@ -21,15 +21,32 @@
         $ipAddress = next($ipAddresses)):
 ?>
 <VirtualHost \
-    <?php if (nat_resolve($ipAddress->escapedAddress) != null ): ?>
-    <?php echo nat_resolve($ipAddress->escapedAddress).":{$VAR->server->webserver->httpPort}" ?> \
+
+
+    <?php 
+            $ip['public'] = $ipAddress->escapedAddress;
+            $ip['private'] = nat_resolve($ipAddress->escapedAddress);
+
+            if ( $ip['private']!= null ):
+                foreach ($ip AS $ipaddress):
+        ?>
+
+    <?php echo $ipaddress.":{$VAR->server->webserver->httpPort}" ?> \
+    <?php endforeach; ?>
     <?php endif; ?>
     <?php for ($n = 1;
             $n < $ipLimit && $ipAddress = next($ipAddresses);
             ++$n):
     ?>
-    <?php if (nat_resolve($ipAddress->escapedAddress) != null ): ?>
-    <?php echo nat_resolve($ipAddress->escapedAddress).":{$VAR->server->webserver->httpPort}" ?> \
+    <?php 
+            $ip['public'] = $ipAddress->escapedAddress;
+            $ip['private'] = nat_resolve($ipAddress->escapedAddress);
+
+            if ( $ip['private']!= null ):
+                foreach ($ip AS $ipaddress):
+        ?>
+    <?php echo $ipaddress.":{$VAR->server->webserver->httpPort}" ?> \
+    <?php endforeach; ?>
     <?php endif; ?>
     <?php endfor; ?>
     <?php echo ($VAR->server->webserver->proxyActive) ? "127.0.0.1:" . $VAR->server->webserver->httpPort : ''; ?> \
@@ -101,8 +118,17 @@
 ?>
 <?php if ($ipAddress->sslCertificate->ce): ?>
 <VirtualHost \
-    <?php if (nat_resolve($ipAddress->escapedAddress) != null ): ?>
-    <?php echo nat_resolve($ipAddress->escapedAddress).":{$VAR->server->webserver->httpsPort}" ?> \
+    
+    <?php 
+            $ip['public'] = $ipAddress->escapedAddress;
+            $ip['private'] = nat_resolve($ipAddress->escapedAddress);
+
+            if ( $ip['private']!= null ):
+                foreach ($ip AS $ipaddress):
+        ?>
+
+    <?php echo $ipaddress.":{$VAR->server->webserver->httpsPort}" ?> \
+    <?php endforeach; ?>
     <?php endif; ?>
     <?php echo ($VAR->server->webserver->proxyActive) ? "127.0.0.1:" . $VAR->server->webserver->httpsPort : ''; ?> \
     >

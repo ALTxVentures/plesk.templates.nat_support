@@ -1,8 +1,15 @@
 <?php include('/usr/local/psa/admin/conf/templates/custom/lib/nat_resolve.inc.php');?>
 
-<?php if (nat_resolve($OPT['ipAddress']->escapedAddress) != null ): ?>
 
-<VirtualHost <?php echo nat_resolve($OPT['ipAddress']->escapedAddress)?>:<?php echo $OPT['ssl'] ? $VAR->server->webserver->httpsPort : $VAR->server->webserver->httpPort ?> <?php echo ($VAR->server->webserver->proxyActive) ? "127.0.0.1:" . ($OPT['ssl'] ? $VAR->server->webserver->httpsPort : $VAR->server->webserver->httpPort) : ''; ?>>
+<?php 
+    $ip['public'] = $OPT['ipAddress']->escapedAddress;
+    $ip['private'] = nat_resolve($OPT['ipAddress']->escapedAddress);
+
+    if ( $ip['private']!= null ):
+        foreach ($ip AS $ipaddress):
+?>    
+
+<VirtualHost <?php echo $ipaddress?>:<?php echo $OPT['ssl'] ? $VAR->server->webserver->httpsPort : $VAR->server->webserver->httpPort ?> <?php echo ($VAR->server->webserver->proxyActive) ? "127.0.0.1:" . ($OPT['ssl'] ? $VAR->server->webserver->httpsPort : $VAR->server->webserver->httpPort) : ''; ?>>
     ServerName "<?php echo $VAR->domain->asciiName ?>"
     <?php if ($VAR->domain->isWildcard): ?>
     ServerAlias  "<?php echo $VAR->domain->wildcardName ?>"
@@ -34,4 +41,6 @@
     RedirectPermanent / "<?php echo $VAR->domain->forwarding->redirectUrl ?>"
 </VirtualHost>
 
-<?php endif; ?>
+<?php 
+endforeach;
+endif; ?>

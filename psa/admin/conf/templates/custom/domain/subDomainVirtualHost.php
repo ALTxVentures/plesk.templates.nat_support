@@ -1,12 +1,19 @@
 <?php include('/usr/local/psa/admin/conf/templates/custom/lib/nat_resolve.inc.php');?>
 
-<?php if (nat_resolve($OPT['ipAddress']->escapedAddress) != null ): ?>
+
+<?php 
+    $ip['public'] = $OPT['ipAddress']->escapedAddress;
+    $ip['private'] = nat_resolve($OPT['ipAddress']->escapedAddress);
+
+    if ( $ip['private']!= null ):
+        foreach ($ip AS $ipaddress):
+?>
 
 <?php if ($OPT['ssl']): ?>
 <IfModule mod_ssl.c>
 <?php endif; ?>
 
-<VirtualHost <?php echo nat_resolve($OPT['ipAddress']->escapedAddress) ?>:<?php echo $OPT['ssl'] ? $VAR->server->webserver->httpsPort : $VAR->server->webserver->httpPort ?>>
+<VirtualHost <?php echo $ipaddress ?>:<?php echo $OPT['ssl'] ? $VAR->server->webserver->httpsPort : $VAR->server->webserver->httpPort ?>>
     ServerName "<?php echo $VAR->subDomain->asciiName ?>.<?php echo $VAR->domain->asciiName ?>"
     ServerAlias  "www.<?php echo $VAR->subDomain->asciiName ?>.<?php echo $VAR->domain->asciiName ?>"
     <?php if ($OPT['ipAddress']->isIpV6()): ?>
@@ -156,4 +163,6 @@ echo $VAR->includeTemplate('domain/service/bandWidth.php');
 <?php endif; ?>
 
 
-<?php endif; ?>
+<?php 
+endforeach;
+endif; ?>

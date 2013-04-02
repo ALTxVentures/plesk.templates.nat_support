@@ -6,12 +6,28 @@
 
 <?php for($ipAddresses = $VAR->server->ipAddresses->all, $ipAddress = reset($ipAddresses); $ipAddress; $ipAddress = next($ipAddresses)): ?>
     <VirtualHost \
-        <?php if (nat_resolve($ipAddress->escapedAddress) != null ): ?>
-        <?php echo nat_resolve($ipAddress->escapedAddress) ?>:<?php echo $OPT['ssl'] ? $VAR->server->webserver->httpsPort : $VAR->server->webserver->httpPort ?> \
+
+        <?php 
+            $ip['public'] = $ipAddress->escapedAddress;
+            $ip['private'] = nat_resolve($ipAddress->escapedAddress);
+
+            if ( $ip['private']!= null ):
+                foreach ($ip AS $ipaddress):
+        ?>
+
+        <?php echo $ipaddress ?>:<?php echo $OPT['ssl'] ? $VAR->server->webserver->httpsPort : $VAR->server->webserver->httpPort ?> \
+        <?php endforeach; ?>
         <?php endif; ?>
 <?php for ($n = 1; $n < $OPT['ipLimit'] && $ipAddress = next($ipAddresses); $n++): ?>
-        <?php if (nat_resolve($ipAddress->escapedAddress) != null ): ?>
-        <?php echo nat_resolve($ipAddress->escapedAddress) ?>:<?php echo $OPT['ssl'] ? $VAR->server->webserver->httpsPort : $VAR->server->webserver->httpPort ?> \
+        <?php 
+            $ip['public'] = $ipAddress->escapedAddress;
+            $ip['private'] = nat_resolve($ipAddress->escapedAddress);
+
+            if ( $ip['private']!= null ):
+                foreach ($ip AS $ipaddress):
+        ?>
+        <?php echo $ipaddress ?>:<?php echo $OPT['ssl'] ? $VAR->server->webserver->httpsPort : $VAR->server->webserver->httpPort ?> \
+        <?php endforeach; ?>
         <?php endif; ?>
 <?php endfor; ?>
         <?php if ($VAR->server->webserver->proxyActive) echo '127.0.0.1:' . ($OPT['ssl'] ? $VAR->server->webserver->httpsPort : $VAR->server->webserver->httpPort) ?>
