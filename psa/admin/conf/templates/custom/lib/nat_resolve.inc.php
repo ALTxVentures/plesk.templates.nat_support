@@ -1,21 +1,20 @@
 <?php
 
-if (!function_exists('nat_resolve'))
-{
-	function nat_resolve($ipAddress)
-	{
-		$nat_translation = array(
+$nat_translation = array(
 				"54.251.139.50" => "10.0.0.206",
 				"54.251.139.25" => "10.0.0.108",
 				"54.251.139.90" => "10.0.0.204",	
 				"54.251.139.29" => "10.0.0.205",
 				"54.251.145.221" => "10.0.0.207",
-				"10.0.0.108" => null,
-				"10.0.0.206" => null,
-				"10.0.0.204" => null,
-				"10.0.0.205" => null,
-				"10.0.0.207" => null,
 			);
+
+if (!function_exists('nat_resolve'))
+{
+	function nat_resolve($ipAddress)
+	{
+		
+		global $nat_translation;
+
 		/*
 
 		$ipAddress->escapedPublicAddress = $ipAddress->escapedAddress;
@@ -28,14 +27,22 @@ if (!function_exists('nat_resolve'))
 
 		
 		if (array_key_exists($ipAddress, $nat_translation))
+		{
 			$ipAddress = $nat_translation[$ipAddress];
+		}
+		else if (in_array($ipAddress, $nat_translation))
+		{
+			$ipAddress = null;
+		}
+		else
+		{
+			// ip not in the nat_translation array, let it be...
+		}
 
 		return $ipAddress;
 
 	}
 }
-
-
 
 
 ?>
