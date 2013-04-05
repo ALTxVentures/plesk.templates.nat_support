@@ -4,19 +4,8 @@ if (!function_exists('nat_resolve'))
 	function nat_resolve($ipAddress)
 	{
 		
-		require_once('nat_translation_db.php');
+		$nat_translation = include('nat_translation_db.php');
 
-		/*
-
-		$ipAddress->escapedPublicAddress = $ipAddress->escapedAddress;
-
-		if (isset($nat_translation[$ipAddress->escapedAddress]))
-			$ipAddress->escapedAddress = $nat_translation[$ipAddress->escapedAddress];
-
-		$ipAddress->escapedPrivateAddress = $ipAddress->escapedAddress;
-		*/
-
-		
 		if (array_key_exists($ipAddress, $nat_translation))
 		{
 			$ipAddress = $nat_translation[$ipAddress];
