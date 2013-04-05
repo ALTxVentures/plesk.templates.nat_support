@@ -3,7 +3,7 @@
 #DO NOT MODIFY THIS FILE BECAUSE IT WAS GENERATED AUTOMATICALLY,
 #SO ALL YOUR CHANGES WILL BE LOST THE NEXT TIME THE FILE IS GENERATED.
 
-<?php include('/usr/local/psa/admin/conf/templates/custom/lib/nat_resolve.inc.php');?>
+<?php require_once('/usr/local/psa/admin/conf/templates/custom/lib/nat_resolve.inc.php');?>
 
 <?php
     $ipAddresses = $VAR->server->ipAddresses->all;

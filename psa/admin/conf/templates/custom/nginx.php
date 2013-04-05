@@ -1,6 +1,6 @@
 <?php /** @var Template_VariableAccessor $VAR */ ?>
 
-<?php include('/usr/local/psa/admin/conf/templates/custom/lib/nat_resolve.inc.php');?>
+<?php require_once('/usr/local/psa/admin/conf/templates/custom/lib/nat_resolve.inc.php');?>
 
 server {
 <?php foreach ($VAR->server->ipAddresses->all as $ipAddress): ?>

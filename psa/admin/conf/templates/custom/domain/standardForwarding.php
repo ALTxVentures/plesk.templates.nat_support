@@ -1,4 +1,4 @@
-<?php include('/usr/local/psa/admin/conf/templates/custom/lib/nat_resolve.inc.php');?>
+<?php require_once('/usr/local/psa/admin/conf/templates/custom/lib/nat_resolve.inc.php');?>
 
 
 <?php 
