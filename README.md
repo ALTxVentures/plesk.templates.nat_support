@@ -16,8 +16,8 @@ DEPLOYMENT
 1. Log in to Plesk Panel as admin and add (Tools & Settings > IP Addresses) all private IPs to the server with the subnet mask of 255.255.255.0 and best to mark them as dedicated.
 2. Add all public IPs to the server with the subnet mask of 255.255.255.255.
 3. Assign / move all subscriptions to the public IPs only. Private IPs shall not be used from now on.
-4. Copy these template set into ```/usr/local/``` folder. Making the new custom scripts available at ```usr/local/psa/admin/conf/templates/custom```.
-5. Modify the ```$nat_translation``` arrat in the ```nat_resolve.inc.php``` file located at ```usr/local/psa/admin/conf/templates/custom```. Mapping all public IPs to private IPs.
+4. Copy these template set into ```/usr/local/``` folder. Making the new custom scripts available at ```/usr/local/psa/admin/conf/templates/custom```.
+5. Modify the ```$nat_translation``` arrat in the ```nat_resolve.inc.php``` file located at ```/usr/local/psa/admin/conf/templates/custom```. Mapping all public IPs to private IPs.
 6. Ask Plesk to regenerate all the scripts. Parallels's offical [document](http://download1.parallels.com/Plesk/PP11/11.0/Doc/en-US/online/plesk-linux-advanced-administration-guide/index.htm?fileName=68693.htm) recommend ```/usr/local/psa/admin/bin/httpdmng --reconfigure-all``` to be called as root via terminal / ssh.
 
 METHOD
