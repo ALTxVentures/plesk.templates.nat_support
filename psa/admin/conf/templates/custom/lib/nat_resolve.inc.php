@@ -4,13 +4,7 @@ if (!function_exists('nat_resolve'))
 	function nat_resolve($ipAddress)
 	{
 		
-		$nat_translation = array(
-				"54.251.139.50" => "10.0.0.206",
-				"54.251.139.25" => "10.0.0.108",
-				"54.251.139.90" => "10.0.0.204",	
-				"54.251.139.29" => "10.0.0.205",
-				"54.251.145.221" => "10.0.0.207",
-			);
+		require_once('nat_translation_db.php');
 
 		/*
 
@@ -40,6 +34,5 @@ if (!function_exists('nat_resolve'))
 
 	}
 }
-
 
 ?>
