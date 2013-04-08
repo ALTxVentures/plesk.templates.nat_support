@@ -62,6 +62,9 @@ server {
     client_max_body_size 128m;
 
     location / { # IPv6 isn't supported in proxy_pass yet.
+        send_timeout 600;
+        proxy_read_timeout 600;
+        proxy_connect_timeout 600;
 <?php if ($OPT['ssl']): ?>
         proxy_pass https://<?php echo ($OPT['ipAddress']->isIpV6() ? '127.0.0.1': $ipaddress) ?>:<?php echo $OPT['backendPort'] ?>;
 <?php else: ?>
@@ -113,6 +116,9 @@ server {
     client_max_body_size 128m;
 
     location / { # IPv6 isn't supported in proxy_pass yet.
+        send_timeout 600;
+        proxy_read_timeout 600;
+        proxy_connect_timeout 600;
 <?php if ($OPT['ssl']): ?>
         proxy_pass https://<?php echo ($OPT['ipAddress']->isIpV6() ? '127.0.0.1': $ipaddress) ?>:<?php echo $OPT['backendPort'] ?>;
 <?php else: ?>
