@@ -27,9 +27,7 @@
     <?php for ($n = 1;
             $n < $ipLimit && $ipAddress = next($ipAddresses);
             ++$n):
-    ?>
-
-     <?php 
+    ?><?php 
             $ip['public'] = $ipAddress->escapedAddress;
             $ip['private'] = nat_resolve($ipAddress->escapedAddress);
 
