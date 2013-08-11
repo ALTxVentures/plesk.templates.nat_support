@@ -27,7 +27,7 @@
         <?php endforeach; ?>
         <?php endif; ?>
 <?php endfor; ?>
-        <?php if ($VAR->server->webserver->proxyActive) echo '127.0.0.1:' . ($OPT['ssl'] ? $VAR->server->webserver->httpsPort : $VAR->server->webserver->httpPort) ?>
+        <?php if ($VAR->server->webserver->proxyActive) echo '127.0.0.1:' . ($OPT['ssl'] ? $VAR->server->webserver->httpsPort : $VAR->server->webserver->httpPort) ?> \
     >
         ServerName "default<?php echo 1 == $OPT['ipLimit'] ? '-' . str_replace(array('.', ':'), array('_', '_'), $ipAddress->address) : '' ?>"
         UseCanonicalName Off
@@ -47,7 +47,9 @@
 <?php endif; ?>
 <?php endif; ?>
 <?php else: ?>
-        SSLEngine off
+        <IfModule mod_ssl.c>
+            SSLEngine off
+        </IfModule>
 <?php endif; ?>
 
         <Directory "<?php echo $VAR->server->webserver->cgiBinDir ?>">

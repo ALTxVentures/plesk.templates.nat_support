@@ -16,7 +16,7 @@
 ?>
 
 server {
-    listen <?php echo $ipaddress . ':' . $OPT['frontendPort'] . ($OPT['defaultIp'] ? ' default_server' : '') ?>;
+    listen <?php echo $ipaddress . ':' . $OPT['frontendPort'] ?>;
 
     server_name <?php echo $VAR->domain->asciiName ?>;
 <?php if ($VAR->domain->isWildcard): ?>
@@ -42,10 +42,10 @@ server {
     <?php endif ?>
 <?php endforeach ?>
 
-    location / { # IPv6 isn't supported in proxy_pass yet.
-        proxy_pass http://<?php echo ($OPT['ipAddress']->isIpV6() ? '127.0.0.1': $ipaddress) ?>:<?php echo $OPT['backendPort'] ?>;
-        proxy_set_header Host 			 $host;
-        proxy_set_header X-Real-IP 		 $remote_addr;
+    location / {
+        proxy_pass http://127.0.0.1:<?php echo $OPT['backendPort'] ?>;
+        proxy_set_header Host            $host;
+        proxy_set_header X-Real-IP       $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         access_log off;
     }

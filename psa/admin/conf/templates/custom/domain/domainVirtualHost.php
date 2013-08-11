@@ -1,3 +1,9 @@
+<?php
+/**
+ * @var Template_VariableAccessor $VAR
+ * @var array $OPT
+ */
+?>
 <?php require_once('/usr/local/psa/admin/conf/templates/custom/lib/nat_resolve.inc.php');?>
 
 <?php 
@@ -8,26 +14,30 @@
         foreach ($ip AS $ipaddress):
 ?>
 
-
 <?php if ($OPT['ssl']): ?>
 <IfModule mod_ssl.c>
 <?php endif; ?>
 
-<VirtualHost <?php echo $ipaddress?>:<?php echo $OPT['ssl'] ? $VAR->server->webserver->httpsPort : $VAR->server->webserver->httpPort ?> <?php echo ($VAR->server->webserver->proxyActive) ? "127.0.0.1:" . ($OPT['ssl'] ? $VAR->server->webserver->httpsPort : $VAR->server->webserver->httpPort) : ''; ?>>
-    ServerName "<?php echo $VAR->domain->asciiName ?>"
+<VirtualHost <?php echo $ipaddress ?>:<?php echo $OPT['ssl'] ? $VAR->server->webserver->httpsPort : $VAR->server->webserver->httpPort ?> <?php echo ($VAR->server->webserver->proxyActive && $OPT['ipAddress']->isIpV6()) ? "127.0.0.1:" . ($OPT['ssl'] ? $VAR->server->webserver->httpsPort : $VAR->server->webserver->httpPort) : ''; ?>>
+    ServerName "<?php echo $VAR->domain->asciiName ?>:<?php echo $OPT['ssl'] ? $VAR->server->webserver->frontendHttpsPort : $VAR->server->webserver->frontendHttpPort ?>"
     <?php if ($VAR->domain->isWildcard): ?>
     ServerAlias  "<?php echo $VAR->domain->wildcardName ?>"
     <?php else: ?>
     ServerAlias  "www.<?php echo $VAR->domain->asciiName ?>"
+    <?php if ($OPT['ipAddress']->isIpV6()): ?>
+    ServerAlias  "ipv6.<?php echo $VAR->domain->asciiName ?>"
+    <?php else: ?>
+    ServerAlias  "ipv4.<?php echo $VAR->domain->asciiName ?>"
     <?php endif; ?>
-    <?php if (!$VAR->domain->isWildcard): ?>
-        <?php if ($OPT['ipAddress']->isIpV6()): ?>
-        ServerAlias  "ipv6.<?php echo $VAR->domain->asciiName ?>"
-        <?php else: ?>
-        ServerAlias  "ipv4.<?php echo $VAR->domain->asciiName ?>"
-        <?php endif; ?>
     <?php endif; ?>
-	UseCanonicalName Off
+    UseCanonicalName Off
+
+    <?php if ($VAR->domain->physicalHosting->branding): ?>
+        <IfModule mod_proxy.c>
+            SSLProxyEngine on
+        </IfModule>
+    <?php endif; ?>
+
 <?php foreach ($VAR->domain->webAliases AS $alias): ?>
     ServerAlias  "<?php echo $alias->asciiName ?>"
     ServerAlias  "www.<?php echo $alias->asciiName ?>"
@@ -50,21 +60,23 @@
     ServerAdmin  "<?php echo $VAR->domain->email ? $VAR->domain->email : $VAR->domain->client->email ?>"
 <?php endif; ?>
 
-	DocumentRoot "<?php echo $OPT['ssl'] ? $VAR->domain->physicalHosting->httpsDir : $VAR->domain->physicalHosting->httpDir ?>"
+    DocumentRoot "<?php echo $OPT['ssl'] ? $VAR->domain->physicalHosting->httpsDir : $VAR->domain->physicalHosting->httpDir ?>"
 <?php if (!$VAR->server->webserver->apache->pipelogEnabled): ?>
     CustomLog <?php echo $VAR->domain->physicalHosting->logsDir ?>/<?php echo $OPT['ssl'] ? 'access_ssl_log' : 'access_log' ?> plesklog
 <?php endif; ?>
     ErrorLog  "<?php echo $VAR->domain->physicalHosting->logsDir ?>/error_log"
-
-<?php if ($VAR->domain->physicalHosting->maintenanceMode): ?>
-    RedirectMatch 503 ^/(?!error_docs/)
-<?php endif; ?>
 
 <?php echo $VAR->includeTemplate('domain/PCI_compliance.php') ?>
 
 <IfModule mod_userdir.c>
     UserDir "<?php echo $VAR->domain->physicalHosting->webUsersDir ?>"
 </IfModule>
+<?php if ($VAR->domain->physicalHosting->vhostId): ?>
+    <IfModule mod_sysenv.c>
+        SetSysEnv PP_VHOST_ID "<?php echo $VAR->domain->physicalHosting->vhostId ?>"
+    </IfModule>
+<?php endif; ?>
+
 
 <?php if ($VAR->domain->physicalHosting->cgi && !$VAR->domain->physicalHosting->rootApplication): ?>
     ScriptAlias  "/cgi-bin/" "<?php echo $VAR->domain->physicalHosting->cgiBinDir ?>/"
@@ -128,14 +140,26 @@ if ($VAR->domain->physicalHosting->miva) {
 <?php endif; ?>
 
 <?php if ($VAR->domain->physicalHosting->php || $VAR->domain->physicalHosting->phpHandlerType == 'cgi'): ?>
-SetEnv PP_CUSTOM_PHP_INI <?php echo $VAR->domain->physicalHosting->vhostDir ?>/etc/php.ini
+SetEnv PP_CUSTOM_PHP_INI <?php echo $VAR->domain->physicalHosting->vhostSystemDir ?>/etc/php.ini
+SetEnv PP_CUSTOM_PHP_CGI_INDEX <?php echo $VAR->domain->physicalHosting->phpHandlerId ?>
+
 <?php endif; ?>
 
 <?php if ($VAR->domain->physicalHosting->php || $VAR->domain->physicalHosting->phpHandlerType == 'fastcgi'): ?>
 <IfModule mod_fcgid.c>
-    FcgidInitialEnv PP_CUSTOM_PHP_INI <?php echo $VAR->domain->physicalHosting->vhostDir ?>/etc/php.ini
-    FcgidMaxRequestLen 16777216
+    FcgidInitialEnv PP_CUSTOM_PHP_INI <?php echo $VAR->domain->physicalHosting->vhostSystemDir ?>/etc/php.ini
+    FcgidInitialEnv PP_CUSTOM_PHP_CGI_INDEX <?php echo $VAR->domain->physicalHosting->phpHandlerId ?>
+
+    FcgidMaxRequestLen 134217728
+<?php if ($VAR->domain->physicalHosting->scriptTimeout): ?>
+    FcgidIOTimeout <?php echo $VAR->domain->physicalHosting->scriptTimeout; ?>
+<?php endif; ?>
+
 </IfModule>
+<?php endif; ?>
+
+<?php if ($VAR->domain->physicalHosting->scriptTimeout): ?>
+TimeOut <?php echo $VAR->domain->physicalHosting->scriptTimeout; ?>
 <?php endif; ?>
 
     <Directory <?php echo $OPT['ssl'] ? $VAR->domain->physicalHosting->httpsDir : $VAR->domain->physicalHosting->httpDir ?>>
@@ -251,6 +275,12 @@ if ($VAR->domain->physicalHosting->fastcgi && $webuser->fastcgi) {
 
 <?php endif; ?>
 
+<?php if (!$VAR->domain->physicalHosting->isMainDomain): ?>
+    <Directory <?php echo $VAR->domain->physicalHosting->vhostDir ?>>
+        Options +FollowSymLinks
+    </Directory>
+<?php endif ?>
+
 <?php
 echo $VAR->includeTemplate('domain/service/protectedDirectories.php', $OPT);
 
@@ -281,8 +311,15 @@ echo $VAR->includeTemplate('domain/service/bandWidth.php');
     Include "<?php echo $OPT['ssl'] ? $VAR->domain->physicalHosting->siteAppsSslConfigDir : $VAR->domain->physicalHosting->siteAppsConfigDir ?>/*.conf"
 <?php endif; ?>
 
+<?php echo $VAR->domain->physicalHosting->apacheSettings ?>
+<?php echo $VAR->includeTemplate('domain/service/seoSafeRedirects.php', array('ssl' => $OPT['ssl'])); ?>
+
+<?php if ($VAR->domain->suspended): ?>
+    <?php echo $VAR->includeTemplate('domain/service/suspend.php'); ?>
+<?php endif; ?>
+
 <?php if (is_file($OPT['ssl'] ? $VAR->domain->physicalHosting->customSslConfigFile : $VAR->domain->physicalHosting->customConfigFile)): ?>
-    Include "<?php echo $OPT['ssl'] ? $VAR->domain->physicalHosting->customSslConfigFile : $VAR->domain->physicalHosting->customConfigFile ?>*"
+    Include "<?php echo $OPT['ssl'] ? $VAR->domain->physicalHosting->customSslConfigFile : $VAR->domain->physicalHosting->customConfigFile ?>"
 <?php endif; ?>
 
 </VirtualHost>
@@ -291,7 +328,5 @@ echo $VAR->includeTemplate('domain/service/bandWidth.php');
 </IfModule>
 <?php endif; ?>
 
-<?php 
-    endforeach;
-    endif;
-?>
+<?php endforeach; ?>
+<?php endif; ?>

@@ -15,13 +15,11 @@
     ServerAlias  "<?php echo $VAR->domain->wildcardName ?>"
     <?php else: ?>
     ServerAlias "www.<?php echo $VAR->domain->asciiName ?>"
+    <?php if ($OPT['ipAddress']->isIpV6()): ?>
+    ServerAlias  "ipv6.<?php echo $VAR->domain->asciiName ?>"
+    <?php else: ?>
+    ServerAlias  "ipv4.<?php echo $VAR->domain->asciiName ?>"
     <?php endif; ?>
-    <?php if (!$VAR->domain->isWildcard): ?>
-        <?php if ($OPT['ipAddress']->isIpV6()): ?>
-        ServerAlias  "ipv6.<?php echo $VAR->domain->asciiName ?>"
-        <?php else: ?>
-        ServerAlias  "ipv4.<?php echo $VAR->domain->asciiName ?>"
-        <?php endif; ?>
     <?php endif; ?>
 <?php foreach ($VAR->domain->webAliases as $alias): ?>
     ServerAlias "<?php echo  $alias->asciiName ?>"
@@ -44,6 +42,7 @@
         SSLEngine off
     </IfModule>
 </VirtualHost>
+
 
 <?php 
     endforeach;

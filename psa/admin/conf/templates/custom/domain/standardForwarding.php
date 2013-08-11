@@ -15,13 +15,11 @@
     ServerAlias  "<?php echo $VAR->domain->wildcardName ?>"
     <?php else: ?>
     ServerAlias "www.<?php echo $VAR->domain->asciiName ?>"
+    <?php if ($OPT['ipAddress']->isIpV6()): ?>
+    ServerAlias  "ipv6.<?php echo $VAR->domain->asciiName ?>"
+    <?php else: ?>
+    ServerAlias  "ipv4.<?php echo $VAR->domain->asciiName ?>"
     <?php endif; ?>
-    <?php if (!$VAR->domain->isWildcard): ?>
-        <?php if ($OPT['ipAddress']->isIpV6()): ?>
-        ServerAlias  "ipv6.<?php echo $VAR->domain->asciiName ?>"
-        <?php else: ?>
-        ServerAlias  "ipv4.<?php echo $VAR->domain->asciiName ?>"
-        <?php endif; ?>
     <?php endif; ?>
 <?php foreach ($VAR->domain->webAliases as $alias): ?>
     ServerAlias "<?php echo $alias->asciiName ?>"
@@ -38,8 +36,13 @@
 <?php if (array_key_exists('serverAdmin', $OPT) && $OPT['serverAdmin']): ?>
     ServerAdmin  "<?php echo $OPT['serverAdmin'] ?>"
 <?php endif; ?>
+<?php if (302 == $VAR->domain->forwarding->redirectHttpCode): ?>
+    RedirectTemp / "<?php echo $VAR->domain->forwarding->redirectUrl ?>"
+<?php else: ?>
     RedirectPermanent / "<?php echo $VAR->domain->forwarding->redirectUrl ?>"
+<?php endif; ?>
 </VirtualHost>
+
 
 <?php 
 endforeach;

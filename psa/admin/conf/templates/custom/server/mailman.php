@@ -48,7 +48,9 @@
         Alias "<?php echo $urlPath ?>" "<?php echo $filePath ?>"
 <?php endforeach; ?>
 
-       	SSLEngine off
+        <IfModule mod_ssl.c>
+            SSLEngine off
+        </IfModule>
 
 <?php echo $VAR->includeTemplate('domain/PCI_compliance.php') ?>
 
